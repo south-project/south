@@ -18,7 +18,7 @@
                     </template>
                 </el-table-column> 
             </el-table>
-            <div class="pagiNation"> 
+            <div class="pagiNation">  
                 <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
@@ -31,19 +31,23 @@
             </div>
         </div>
         <WordTip :showpreview.sync="showpreview" :diaTitle="diaTitle" @sendMessage="sendMessage" :paramTips="paramTips"/>
+        <roleEditor :show.sync="show" :diaTitle="diaTitle" @sendMessage="sendRole" />
     </div>
 </template>
 
 <script>
 import WordTip from '@/components/setTips'
+import roleEditor from '@/components/roleEditor'
 export default {
      components:{
         WordTip,
+        roleEditor
     },
     data() {
         return {
             diaTitle:'',
             showpreview:false,
+            show:false,
             paramTips:'',
             tableData: [{
                 date: '六一儿童节',
@@ -82,7 +86,8 @@ export default {
         },
         //编辑
         handleEdit(row){
-            this.$router.push(`/BannerManage/EditBanner/${row.name}`)
+            this.show = true
+            this.diaTitle = "编辑角色"
         },
          //分页
         handleSizeChange(val) {
@@ -93,17 +98,18 @@ export default {
             console.log(`当前页: ${val}`);
         },
         //确认删除
-        sendMessage(){
+        sendMessage(e){
 
         },
-        //添加banner
+        //添加角色
         addNew(){
-            if(this.tableData.length>=6){
-                this.$message('最多添加六张banner图')
-                return
-            }
-            this.$router.push({path:`/BannerManage/EditBanner/add`})
+            this.show = true
+            this.diaTitle = "添加角色"
         },
+        //角色提交
+        sendRole(e){
+            console.log(e)
+        }
     }   
 }
 </script> 

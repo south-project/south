@@ -16,7 +16,7 @@ export function formatTime(date) {
     const t2 = [hour, minute, second].map(formatNumber).join(':')
 
     return `${t1} ${t2}`
-}
+} 
 //时间格式化
 export function tableTime(date){
     if(date){

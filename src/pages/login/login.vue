@@ -1,10 +1,21 @@
 <template>
     <div class="clearfix" id="login_wrap">
+        <div class="login_content">
+            <img src="static/img/login/design.jpg" alt="">
+        </div>
         <div class="f_left">
-            <img src="static/img/login/illustration.png" alt="">
+            <!-- <img src="static/img/login/illustration.png" alt=""> -->
+            <!-- <img src="static/img/login/design.jpg" alt=""> -->
+            <!-- <div class="about-south">
+                 <p class="mb15">南方简介</p>
+                <img src="http://www.zsad.com.cn/static/web/img/about3.png?v=v3 " alt="">
+                <p class="line"></p>
+                <div class="content">
+                    <p>浙江南方建筑设计有限公司（简称“南方设计”）成立于1999年1月，拥有建筑行业（建筑工程）甲级、风景园林工程设计乙级和城乡规划乙级资质，可提供建筑、结构、公用设备等13大专业全方位服务，特色小镇、乡村再生、城市更新、创意地产、居住建筑、文化会展等17大产品体系覆盖所有建设类型。南方设计至今已完成2000多个项目案例，业绩遍及全国25省150市，跨越各种项目类型和产业特点，彰显了南方设计强大的业务能力及深厚的设计实力。</p><p><br></p><p>南方设计秉承“和而不同，顺势而为，知行合一”的企业文化。2015年，南方设计顺势而为，借特色小镇发展之势，旗下子公司、工作室数量由20多家成长为70多家，员工人数由300人扩张到近1000人，服务专业由单一的建筑设计发展成为涵盖策划、产业、建设、运营、互联网、金融、能源、科技等跨专业、跨行业的综合型公司。</p><p><br></p><p>通过对创新生态系统下平台的发展，南方设计以设计咨询为切入口，整合产业、运营、金融等各类优质资源，形成整体和谐、良性循环的产业生态圈；以建筑专业为龙头，以深度专业化为目的，统领和延伸其它专业，主要包括建筑、结构、公用设备、室内、工程管理、幕墙、产业规划、景观、BIM、绿建、灯光、效果图、动画、新型智能墙体材料研发等，成为行业内最具影响力的整体解决方案服务商。</p>                </div>
+             </div> -->
         </div>
         <div class="f_right">
-            <h4 class="large_title"><img src="static/img/login/logo.png" alt="logo">基沐知识付费</h4>
+            <h4 class="large_title" style="color:#fff"><img src="static/img/login/south.png" class="logo_icon" alt="logo">南方设计</h4>
             <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="" class="demo-ruleForm">
                 <h5 class="small_title"><img src="static/img/login/denglu.png" alt="登录">密码登录</h5>
                 <el-form-item  prop="pass" class="icon_content">
@@ -22,15 +33,15 @@
                     </el-button>.
                 </el-form-item> 
                  <el-form-item class="icon_content clearFix">
-                   <el-checkbox class="f_left" v-model="ruleForm.checked">记住密码</el-checkbox>
-                    <span class="fort_blue f_right" @click="goAsh('/forgot')">忘记密码</span>
+                    <el-checkbox class="f_left" v-model="ruleForm.checked">记住密码</el-checkbox>
+                    <!-- <span class="fort_blue f_right" @click="goAsh('/forgot')">忘记密码</span> -->
                 </el-form-item>
                 <el-form-item class="icon_content login_margin">
                     <el-button class="login_button" type="primary" @click="submitForm('ruleForm')">登录</el-button>
                 </el-form-item>
-                <el-form-item class="icon_content">
+                <!-- <el-form-item class="icon_content">
                     <p><span class="nac_grey">没有账号？</span><span @click="goAsh('/register')" class="rit_blue">立即注册</span></p>
-                </el-form-item>
+                </el-form-item> -->
             </el-form>
         </div>
     </div>

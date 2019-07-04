@@ -16,7 +16,7 @@
                 <el-table-column prop="num" label="登录账号" ></el-table-column>
                 <el-table-column label="操作" >
                     <template slot-scope="scope">
-                        <el-button @click="handleDelete(scope.row)" type="text" >删除</el-button>
+                        <el-button @click="handleDelete(scope.row)" type="text" >删除</el-button> 
                         <el-button @click="handleEdit(scope.row)" type="text" >编辑</el-button>
                     </template>
                 </el-table-column>
@@ -34,19 +34,23 @@
             </div>
         </div>
         <WordTip :showpreview.sync="showpreview" :diaTitle="diaTitle" @sendMessage="sendMessage" :paramTips="paramTips"/>
+        <Manager :show.sync="show" :diaTitle="diaTitle" @sendMessage="sendRole" />
     </div>
 </template>
 
 <script>
 import WordTip from '@/components/setTips'
+import Manager from '@/components/manager'
 export default {
      components:{
         WordTip,
+        Manager
     },
     data() {
         return {
             diaTitle:'',
             showpreview:false,
+            show:false,
             paramTips:'',
             tableData: [{
                 date: '六一儿童节',
@@ -85,7 +89,8 @@ export default {
         },
         //编辑
         handleEdit(row){
-            this.$router.push(`/BannerManage/EditBanner/${row.name}`)
+            this.show = true
+            this.diaTitle = "编辑管理员"
         },
          //分页
         handleSizeChange(val) {
@@ -99,13 +104,14 @@ export default {
         sendMessage(){
 
         },
-        //添加banner
+        //管理员编辑
+        sendRole(e){
+            console.log(e)
+        },
+        //添加管理员
         addNew(){
-            if(this.tableData.length>=6){
-                this.$message('最多添加六张banner图')
-                return
-            }
-            this.$router.push({path:`/BannerManage/EditBanner/add`})
+            this.show = true
+            this.diaTitle = "添加管理员"
         },
     }   
 }

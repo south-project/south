@@ -18,7 +18,7 @@
 
 <script>
 import { mapState,mapMutations} from 'vuex'
-import baseManage from '@/pages/systemManage/components/baseManage'
+import baseManage from '@/pages/systemManage/components/baseManage' 
 import roleManage from '@/pages/systemManage/components/roleManage'
 export default {
     components:{
@@ -43,10 +43,11 @@ export default {
        
     },
     mounted(){
+        
     },
     methods:{
          ...mapMutations([
-                'setCrumbIndex'
+            'setCrumbIndex'
         ]), 
         changeTab(e){
             this.subIndex = e
@@ -102,7 +103,7 @@ export default {
             width: 100px;
             text-align: center;
             position: relative;
-            padding:20px 0;
+            padding:15px 0;
             transition: all .3s;
             font-size: 15px;
             &.active{

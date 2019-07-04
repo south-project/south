@@ -12,7 +12,7 @@
                         <span class="iconfont" ></span>
                         {{route.meta.name}}
                     </el-breadcrumb-item>
-                </transition-group>
+                </transition-group> 
             </el-breadcrumb> -->
             <div class="aside__top--right">
                 <div class="quit-system" >
@@ -21,7 +21,6 @@
                         <span class="user">岁月清风</span>
                         <span class="el-icon-caret-bottom icon"></span>
                     </div>
-                    
                     <div class="user_item">
                         <div class="user_edit">
                             <span @click="changePassWord">
@@ -80,7 +79,7 @@ export default {
         },
         loginOut() {
             this.$store.commit('LOGIN_OUT')
-            this.$router.push('/login')
+            this.$router.push('/Login')
             /* 防止切换角色时addRoutes重复添加路由导致出现警告 */
             //window.location.reload()
         },
@@ -99,7 +98,6 @@ export default {
 @import '../../../../styles/_mixin';
  .aside__top .aside__top--right > div.quit-system:hover .user_item{
     display: block;
-    right:-40px;
 }
 .aside__top {
     border-bottom: 1px solid #e5e5e5;
@@ -205,6 +203,7 @@ export default {
                     vertical-align: middle;
                     display: flex;
                     align-items: center;
+                    min-width: 140px;
                     span{
                         display: inline-block;
                         &.user{
@@ -220,13 +219,14 @@ export default {
                     }
                 }
                 .user_item{
+                    display: none;
+                    min-width: 140px;
                     transition: all .25s;
                     @include allcover;
                     background: $bg;
                     line-height: 40px;
+                    width:100%;
                     top:48px;
-                    right:-290px;
-                    width:250px;
                     padding:10px 0;
                     border: 1px solid #EBEBEB;
                     box-shadow: 0 2px 15px 0 #ECEEF0;

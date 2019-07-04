@@ -12,6 +12,9 @@ export default {
         state.isSidebarNavCollapse = isSidebarNavCollapse
     },
     setCrumbList(state, list) {
+        if(list.length===3){
+            list.splice(1,1)
+        }
         state.crumbList = list
     },
     setCrumbIndex(state,crumbIndex){

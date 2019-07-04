@@ -15,7 +15,7 @@
                 <el-form-item class="addNew" >
                     <router-link to="/class/addGraphic/add"> 
                         <el-button type="primary"> 导出数据</el-button>
-                    </router-link>
+                    </router-link> 
                 </el-form-item>
             </el-form>
         </div>

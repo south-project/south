@@ -6,7 +6,7 @@
                     <el-form-item class="base_long" label="客服热线" prop="line" >
                         <el-input v-model="formInline.line"  placeholder="请输入"></el-input>
                     </el-form-item>
-                    <el-form-item class="el_editor" label="图文详情" required>
+                    <el-form-item class="el_editor" label="关于我们">
                         <QuillEditor class="editor_content" v-model="editorContentValue" :value="editorContentValue"  @onEditorChange="onEditorChange"/>
                     </el-form-item>
                     <el-form-item>
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import QuillEditor from '@/components/editor'
+import QuillEditor from '@/components/editor' 
 export default {
     name:'UserManageDetail',
     components:{

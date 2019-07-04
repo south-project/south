@@ -1,45 +1,80 @@
 <template>
   <div class="hello">
-    <el-dialog  class="dialog" :title="diaTitle" :visible.sync="dialogFormVisible" center  @close="$emit('update:showpreview', false)"
-        :showpreview="showpreview">
-         <div class="open_tips">
-            <img class="tips_img" src="static/img/tishi.png" alt="">
-            <p>{{paramTips}}</p>
-        </div>
+    <el-dialog  class="dialog" :title="diaTitle" :visible.sync="dialogFormVisible" center  @close="$emit('update:show', false)"
+        :show="show">
+         <el-form :model="form">
+            <el-form-item label="角色名称" :label-width="formLabelWidth" >
+                <el-input v-model="form.name" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="" :label-width="formLabelWidth" >
+                <el-tree
+                :data="data"
+                show-checkbox
+                node-key="id"
+                ref="tree"
+                :default-checked-keys="menuData"
+                :props="defaultProps"
+                @check-change="handleCheckChange">
+                </el-tree>
+            </el-form-item>
+        </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
             <el-button type="primary" @click="sendMessage">确 定</el-button>
         </div> 
-    </el-dialog>
+    </el-dialog> 
   </div>
 </template>
 
 <script>
 export default {
   props:{
-    showpreview:{
+    show:{
       type:Boolean
     }, 
     diaTitle:{
     },
-    paramTips:{
-      type:String
-    }
+    
   },
   data () {
     return {
       dialogFormVisible: false,
+      formLabelWidth: '120px',
       form:{
-          pass:'',
-          newPass:'',
-          confirmPass:'',
+          name:'',
       },
-      formLabelWidth: '120px'
+      data: [{
+        id: 1,
+        label: '估算记录',
+      }, {
+        id: 2,
+        label: '用户管理',
+      }, {
+        id: 3,
+        label: '均价数据库',
+      },{
+        id: 4,
+        label: '建筑货值统计',
+      },{
+        id: 5,
+        label: '车位货值统计',
+      },{
+        id: 6,
+        label: 'banner管理',
+      },{
+        id: 7,
+        label: '系统设置',
+      }],
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
+      menuData:['5'],
     }
   },
   watch:{
-    showpreview(newVal){
-      this.dialogFormVisible = this.showpreview
+    show(newVal){
+      this.dialogFormVisible = this.show
     }
   },
   mounted(){
@@ -47,9 +82,15 @@ export default {
   methods:{
     //提交表单
     sendMessage(){
+      this.form.menuData = this.menuData
       this.$emit('sendMessage',this.form)
       this.dialogFormVisible = false
-    } 
+    },
+    //权限选择
+    handleCheckChange(data, checked, indeterminate) {
+      this.menuData = this.$refs.tree.getCheckedNodes()
+      console.log(data, this.$refs.tree.getCheckedNodes());
+    },
   }
 }
 </script>

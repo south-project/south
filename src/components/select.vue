@@ -107,7 +107,7 @@ export default {
                 this.shi1 = this.province[index2].children
                 this.formInline.shi = this.province[index2].children[0].value
                 this.qu1 =this.province[index2].children[0].children
-                this.qu = this.province[index2].children[0].children[0].value
+                this.formInline.qu = this.province[index2].children[0].children[0].value
                 this.E = this.qu1[0].id
             }
         }

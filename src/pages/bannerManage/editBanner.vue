@@ -5,7 +5,7 @@
         </div>
         <div class="page_view">
             <div class="bannerForm">
-                <el-form :model="formInline" ref="formInline"  class="demo-form-inline form" size='medium' label-width="120px">
+                <el-form :model="formInline" ref="formInline" :rules="rules" class="demo-form-inline form" size='medium' label-width="120px">
                     <el-form-item class="base_long" label="banner名称" prop="name" required>
                         <el-input v-model="formInline.name"  placeholder="请输入banner名称"></el-input>
                         <span class="number_compute" :style="{color:(baseNumber>=10?'red':'')}"><span>{{10-baseNumber}}</span></span>
@@ -17,14 +17,14 @@
                             accept="image/*"
                             action="https://jsonplaceholder.typicode.com/posts/"
                             :http-request="fnUploadRequest"
-                            :disabled="disabled"
+                            :disabled="disabled" 
                             >
                             <el-button class="add_button" type="primary">选择文件</el-button>
                         </el-upload>
                     </el-form-item>
-                    <el-form-item label="排序" prop="sort" required>
+                    <el-form-item label="排序" prop="sort" required >
                         <el-select v-model="formInline.sort"  placeholder="请选择" @change="changeSort">
-                            <el-option v-for="(item,index) in classItem" :key="index"
+                            <el-option v-for="(item,index) in classItem" :key="index" 
                             :label="item.label" :value="item.value"></el-option>
                         </el-select>
                     </el-form-item>
@@ -40,13 +40,13 @@
 <script>
 
 export default {
-    name:'UserManageDetail',
+    name:'editBanner',
     data() {
         return {
             formInline:{
                 sort:'',
                 name:'',
-                picture:'11'
+                picture:''
             },
             classItem:[
                 {label:'1',value:'1'},
@@ -55,12 +55,17 @@ export default {
                 {label:'4',value:'4'},
                 {label:'5',value:'5'}, 
                 {label:'6',value:'6'},
-            ], 
+            ],  
             autherItem:'',
             baseNumber:0,
             videoFlag:true,
             baseUrl:null,
-            disabled:false
+            disabled:false,
+            rules:{
+                name:[{required:true,message:'请输入banner名称',trigger:'blur'},{ max: 10, message: '长度在 10 个字符以内', trigger: 'blur' }],
+                picture:[{required:true,message:'请上传图片',trigger:'blur'}],
+                sort:[{required:true,message:'请选择排序',trigger:'blur'}],
+            }
         }
     },
     watch:{
@@ -84,24 +89,23 @@ export default {
             this.$router.go(-1)
         },
         //自定义上传
-        fnUploadRequest(){
-
+        fnUploadRequest(e){
+            this.formInline.picture = '111'
         },
         //排序
         changeSort(e){
-            let data = this.classItem
-            
-            if(this.autherItem!=""){
-                let cur = this.autherItem.label 
-                data.push(this.autherItem)
-            }
-            data.map((item,index)=>{
-                if(e===item.label){
-                    data.splice(index,1)
-                    this.autherItem = item
-                }
-            })
-            
+            // let data = this.classItem
+            // let arr = []
+            // if(this.autherItem!=""){
+            //     let cur = this.autherItem.label 
+            //     data.push(this.autherItem)
+            // }
+            // data.map((item,index)=>{
+            //     if(e===item.label){
+            //         data.splice(index,1)
+            //         this.autherItem = item
+            //     }  
+            // })
         },
         //提交表单
         submit(formName){
@@ -128,5 +132,8 @@ export default {
         right:20px;
         top:0px;
     }
+}
+.el-select-dropdown__item.selected{
+    display: none;
 }
 </style>

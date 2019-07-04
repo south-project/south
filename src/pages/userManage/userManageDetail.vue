@@ -21,7 +21,7 @@
                            <p><span class="left">累计次数</span><span class="right">56</span></p>
                            <p><span class="left">有限次数</span><span class="right">12</span></p>
                        </li>
-                   </ul>
+                   </ul> 
                </div>
            </div>
         </div>
@@ -60,17 +60,24 @@
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="total">
                 </el-pagination>
-            </div>
+            </div> 
         </div>
+        <WordTip :showpreview.sync="showpreview" :diaTitle="diaTitle" @sendMessage="sendMessage" :paramTips="paramTips"/>
     </div>
 </template>
 
 <script>
-
+import WordTip from '@/components/setTips'
 export default {
+     components:{
+        WordTip,
+    },
     name:'UserManageDetail',
     data() {
         return {
+            showpreview:false,
+            diaTitle:'',
+            paramTips:'',
             tableData: [{
                 date: '2016-05-03',
                 name: '王小虎',
@@ -130,7 +137,12 @@ export default {
         handleSet(row){
             this.showpreview = true
             this.diaTitle = "设为有效估算"
+            this.paramTips = "设为有效估算,该记录的相关数据将作为‘采集样本数据’参与各项数据的平均价格计算当中去，确认设为有效估算吗？"
         },
+        //提交表单
+        sendMessage(e){
+            console.log(e)
+        }
     }   
 }
 </script> 
