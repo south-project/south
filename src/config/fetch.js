@@ -1,116 +1,117 @@
 import {
-	url_str
+  url_str
 } from './env'
-import { Message,Loading } from 'element-ui'
+import {
+  Message,
+  Loading
+} from 'element-ui'
 import store from '@/store/index.js'
 
 
+export default async (url = '', data = {}, type = 'GET', method = 'fetch') => {
+  let token = store.state.UserToken
+  let requestConfig;
+  if (token == null || token == undefined) {
+    requestConfig = {
+      credentials: 'include',
+      method: type,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      mode: "cors",
+      cache: "force-cache",
 
-export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
-	let token = store.state.UserToken
-	let storeId = JSON.parse(store.state.UserData).id
-	let requestConfig;
-	if(token==null || token==undefined){
-		requestConfig = {
-			credentials: 'include',
-			method: type,
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json',
-			},
-			mode: "cors",
-			cache: "force-cache",
-			
-		}
-	}else{
-		requestConfig = {
-			credentials: 'include',
-			method: type,
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json',
-				'token':token
-			},
-			mode: "cors",
-			cache: "force-cache",
-			
-		}
-	}
-	type = type.toUpperCase();
-	url = url_str + url;
-	//url = url_str + url+"/"+storeId;
-	
-	if (type == 'GET') {
-		let dataStr = ''; //数据拼接字符串
-		Object.keys(data).forEach(key => {
-			dataStr += key + '=' + data[key] + '&';
-		})
+    }
+  } else {
+    requestConfig = {
+      credentials: 'include',
+      method: type,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': token
+      },
+      mode: "cors",
+      cache: "force-cache",
 
-		if (dataStr !== '') {
-			dataStr = dataStr.substr(0, dataStr.lastIndexOf('&'));
-			url = url + '?' + dataStr;
-		}
-	}
+    }
+  }
+  type = type.toUpperCase();
+  url = url_str + url;
+  //url = url_str + url+"/"+storeId;
 
-	if (window.fetch && method == 'fetch') {
-		if (type == 'POST') {
-			Object.defineProperty(requestConfig, 'body', {
-				value: JSON.stringify(data)
-			})
-		}
+  if (type == 'GET') {
+    let dataStr = ''; //数据拼接字符串
+    Object.keys(data).forEach(key => {
+      dataStr += key + '=' + data[key] + '&';
+    })
 
-		try {
-			// let loadingInstance = Loading.service(options);
-			// this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
-			// 	loadingInstance.close();
-			// });
-			const response = await fetch(url, requestConfig);
-			const responseJson = await response.json();
-			if(response.status == 403){
-				//设置token
-				Message.warning({
-                    message: '授权失败，请重新登录'
-                })
-                store.commit('LOGIN_OUT')
-                setTimeout(() => {
-                    window.location.reload()
-                }, 1000)
-			}
-			return responseJson
-		} catch (error) {
-			throw new Error(error)
-		}
-	} else {
-		return new Promise((resolve, reject) => {
-			let requestObj;
-			if (window.XMLHttpRequest) {
-				requestObj = new XMLHttpRequest();
-			} else {
-				requestObj = new ActiveXObject;
-			}
+    if (dataStr !== '') {
+      dataStr = dataStr.substr(0, dataStr.lastIndexOf('&'));
+      url = url + '?' + dataStr;
+    }
+  }
 
-			let sendData = '';
-			if (type == 'POST') {
-				sendData = JSON.stringify(data);
-			}
+  if (window.fetch && method == 'fetch') {
+    if (type == 'POST') {
+      Object.defineProperty(requestConfig, 'body', {
+        value: JSON.stringify(data)
+      })
+    }
 
-			requestObj.open(type, url, true);
-			requestObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			requestObj.setRequestHeader("token",store.state.UserToken);
-			requestObj.send(sendData);
-			requestObj.onreadystatechange = () => {
-				if (requestObj.readyState == 4) {
-					if (requestObj.status == 200) {
-						let obj = requestObj.response
-						if (typeof obj !== 'object') {
-							obj = JSON.parse(obj);
-						}
-						resolve(obj)
-					} else {
-						reject(requestObj)
-					}
-				}
-			}
-		})
-	}
+    try {
+      // let loadingInstance = Loading.service(options);
+      // this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
+      // 	loadingInstance.close();
+      // });
+      const response = await fetch(url, requestConfig);
+      const responseJson = await response.json();
+      // if (response.status == 403) {
+      //   //设置token
+      //   Message.warning({
+      //     message: '授权失败，请重新登录'
+      //   })
+      //   store.commit('LOGIN_OUT')
+      //   setTimeout(() => {
+      //     window.location.reload()
+      //   }, 1000)
+      // }
+      return responseJson
+    } catch (error) {
+      throw new Error(error)
+    }
+  } else {
+    return new Promise((resolve, reject) => {
+      let requestObj;
+      if (window.XMLHttpRequest) {
+        requestObj = new XMLHttpRequest();
+      } else {
+        requestObj = new ActiveXObject;
+      }
+
+      let sendData = '';
+      if (type == 'POST') {
+        sendData = JSON.stringify(data);
+      }
+
+      requestObj.open(type, url, true);
+      requestObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      requestObj.setRequestHeader("token", store.state.UserToken);
+      requestObj.send(sendData);
+      requestObj.onreadystatechange = () => {
+        if (requestObj.readyState == 4) {
+          if (requestObj.status == 200) {
+            let obj = requestObj.response
+            if (typeof obj !== 'object') {
+              obj = JSON.parse(obj);
+            }
+            resolve(obj)
+          } else {
+            reject(requestObj)
+          }
+        }
+      }
+    })
+  }
 }

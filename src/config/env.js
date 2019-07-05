@@ -6,23 +6,23 @@
  * imgBaseUrl: 图片所在域名地址
  * 
  */
-let url_str = ''; 
+let url_str = '';
 let routerMode = 'hash';
 let imgBaseUrl = '';
 
 
 if (process.env.NODE_ENV == 'development') {
-	url_str = '/img/';
-	//url_str = 'http://192.168.1.153:8089';
-	//url_str = 'http://192.168.1.160:8089';
-	url_str = 'http://localhost:8080';
-	//url_str = 'http://47.99.180.125:8089';
+  url_str = '/img/';
+  //url_str = 'http://192.168.1.153:8089';
+  //url_str = 'http://192.168.1.160:8089';
+  url_str = 'http://192.168.1.183:8898/web-admin';
+  //url_str = 'http://47.99.180.125:8089';
 
-}else if(process.env.NODE_ENV == 'production'){
-	url_str = 'http://47.99.180.125:8089';
+} else if (process.env.NODE_ENV == 'production') {
+  url_str = 'http://47.99.180.125:8089';
 }
 export {
-	url_str,
-	routerMode,
-	imgBaseUrl,
+  url_str,
+  routerMode,
+  imgBaseUrl,
 }
