@@ -11,6 +11,10 @@ export const getPermission = (account) => fetch('/login/selectPowerByAccount', {
  * 用户管理
  */
 export const userManage = (param) => fetch('/user/selectManUerInfoPageHelper', param, 'POST')
+/**
+ * 用户管理
+ */
+export const exportUserManage = (param) => fetch('/user/ExportInfo', param, 'POST')
 
 /**
  * 系统设置 管理员列表

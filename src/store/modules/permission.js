@@ -52,7 +52,6 @@ export default {
       let MainContainer = DynamicRoutes.find(v => v.path === '')
       let children = MainContainer.children
       let arr = []
-      console.log(children)
       children.forEach((item, index) => {
         routes.forEach(element => {
           if (item.meta.parentName === element.name) {
@@ -77,7 +76,6 @@ export default {
       setDefaultRoute([MainContainer])
       /*  初始路由 */
       let initialRoutes = router.options.routes
-      console.log(DynamicRoutes)
       /*  动态添加路由 */
       router.addRoutes(DynamicRoutes)
       /* 完整的路由表 */

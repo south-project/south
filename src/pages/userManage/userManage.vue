@@ -8,14 +8,14 @@
         class="demo-form-inline form"
         size="medium"
       >
-        <el-form-item label="昵称" prop="code">
-          <el-input v-model="formInline.code" placeholder="请输入昵称"></el-input>
+        <el-form-item label="昵称" prop="nickname">
+          <el-input v-model="formInline.nickname" placeholder="请输入昵称"></el-input>
         </el-form-item>
-        <el-form-item label="姓名" prop="code">
-          <el-input v-model="formInline.code" placeholder="请输入姓名"></el-input>
+        <el-form-item label="姓名" prop="name">
+          <el-input v-model="formInline.name" placeholder="请输入姓名"></el-input>
         </el-form-item>
-        <el-form-item label="手机号" prop="code">
-          <el-input v-model="formInline.code" placeholder="请输入手机号"></el-input>
+        <el-form-item label="手机号" prop="mobile">
+          <el-input v-model="formInline.mobile" placeholder="请输入手机号"></el-input>
         </el-form-item>
         <el-form-item label="注册时间">
           <el-date-picker
@@ -27,7 +27,7 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="用户类型" class="middle">
-          <el-select v-model="formInline.status" placeholder="请选择">
+          <el-select v-model="formInline.type" placeholder="请选择">
             <el-option
               v-for="(item,index) in classItem"
               :key="index"
@@ -44,9 +44,7 @@
           <el-button @click="searchInfo" type="primary">搜索</el-button>
         </el-form-item>
         <el-form-item class="addNew">
-          <router-link to="/class/addGraphic/add">
-            <el-button type="primary">导出数据</el-button>
-          </router-link>
+          <el-button type="primary" @click="handeleDownloadExcel">导出数据</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -84,13 +82,17 @@
 </template>
 
 <script>
+import { exportUserManage, userManage } from "@/api/getData";
+import { openDownloadDialog, sheet2blob } from "@/api/downDialog";
+import XLSX from "xlsx";
 export default {
   data() {
     return {
       formInline: {
-        code: "",
-        status: "",
+        nickname: "",
         name: "",
+        mobile: "",
+        type: "",
         dateTime: ""
       },
       classItem: [
@@ -173,6 +175,22 @@ export default {
     //详情
     handleDetail(row) {
       this.$router.push("/UserManage/detail");
+    },
+    //导出数据
+    handeleDownloadExcel() {
+      this.form.validateFields((err, values) => {
+        let param = values;
+        if (values.dataTime != undefined) {
+          param.beginDateTime = values.dataTime[0];
+          param.endDateTime = values.dataTime[1];
+        }
+        param.current = this.current;
+        param.size = this.size;
+        getExcel(param).then(res => {
+          var sheet = XLSX.utils.aoa_to_sheet(res.data);
+          openDownloadDialog(sheet2blob(sheet), "用户管理.xlsx");
+        });
+      });
     }
   }
 };
