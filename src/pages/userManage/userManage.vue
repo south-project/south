@@ -17,7 +17,7 @@
         <el-form-item label="手机号" prop="mobile">
           <el-input v-model="formInline.mobile" placeholder="请输入手机号"></el-input>
         </el-form-item>
-        <el-form-item label="注册时间">
+        <el-form-item label="注册时间" prop="dateTime">
           <el-date-picker
             v-model="formInline.dateTime"
             type="daterange"
@@ -26,7 +26,7 @@
             end-placeholder="结束日期"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="用户类型" class="middle">
+        <el-form-item label="用户类型" class="middle" prop="type">
           <el-select v-model="formInline.type" placeholder="请选择">
             <el-option
               v-for="(item,index) in classItem"
@@ -50,16 +50,18 @@
     </div>
     <div class="page_view">
       <el-table :data="tableData" tooltip-effect="dark" style="width: 100%" border>
-        <el-table-column label="头像昵称" width="120">
-          <template slot-scope="scope">{{ scope.row.date }}</template>
+        <el-table-column label="头像昵称" width="120" prop="nickname"></el-table-column>
+        <el-table-column prop="type" label="用户类型" width="120">
+          <template slot-scope="scope">
+            <span>{{scope.row.type | getUserType}}</span>
+          </template>
         </el-table-column>
-        <el-table-column prop="name" label="用户类型" width="120"></el-table-column>
-        <el-table-column prop="address" label="剩余免费次数"></el-table-column>
-        <el-table-column prop="address" label="累计估算"></el-table-column>
-        <el-table-column prop="address" label="有效估算"></el-table-column>
-        <el-table-column prop="address" label="姓名"></el-table-column>
-        <el-table-column prop="address" label="手机号"></el-table-column>
-        <el-table-column prop="date" label="注册日期"></el-table-column>
+        <el-table-column prop="free_num" label="剩余免费次数"></el-table-column>
+        <el-table-column prop="total_estimate_times" label="累计估算"></el-table-column>
+        <el-table-column prop="valid_estimate_times" label="有效估算" :formatter="getBoole"></el-table-column>
+        <el-table-column prop="name" label="姓名"></el-table-column>
+        <el-table-column prop="mobile" label="手机号"></el-table-column>
+        <el-table-column prop="create_time" label="注册日期"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button @click="handleDetail(scope.row)" type="text">详情</el-button>
@@ -96,49 +98,10 @@ export default {
         dateTime: ""
       },
       classItem: [
-        { label: "已上架", value: "1" },
-        { label: "已下架", value: "2" },
-        { label: "待上架", value: "3" },
-        { label: "禁用中", value: "4" },
-        { label: "解禁中", value: "5" }
+        { label: "微信粉丝", value: "0" },
+        { label: "认证会员", value: "1" }
       ],
-      tableData: [
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-08",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-06",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-07",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        }
-      ],
+      tableData: [],
       currentPage: 1,
       size: 10,
       total: 400
@@ -146,50 +109,86 @@ export default {
   },
   mounted() {
     //console.log(mapList)
+    this.initData();
   },
   methods: {
     initData() {
-      userManageList(this.currentPage, this.size).then(res => {
-        console.log(res);
+      let param = {};
+      param.pageNum = this.currentPage;
+      param.pageSize = this.size;
+      userManage(param).then(res => {
+        if (res.code == 200) {
+          this.tableData = res.data.rows;
+          this.currentPage = res.data.currentPage;
+          this.size = res.data.currentPageTotal;
+          this.total = res.data.total;
+        }
       });
+    },
+    //是否过滤
+    getBoole(val) {
+      if (val.effective_estimate == 0) {
+        return "否";
+      } else {
+        return "是";
+      }
     },
     //搜索
     searchInfo() {
-      console.log(this.formInline);
+      let param = this.formInline;
+      param.pageNum = this.currentPage;
+      param.pageSize = this.size;
+      if (this.formInline.dateTime != "") {
+        param.beginDate = this.formInline.dateTime[0];
+        param.endDate = this.formInline.dateTime[1];
+      }
+      userManage(param).then(res => {
+        if (res.code == 200) {
+          this.tableData = res.data.rows;
+          this.currentPage = res.data.currentPage;
+          this.size = res.data.currentPageTotal;
+          this.total = res.data.total;
+        }
+      });
     },
     //重置
     resetForm(formName) {
       this.$refs[formName].resetFields();
-      this.formInline = {};
+      this.initData();
     },
     //分页
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
       this.size = val;
+      this.initData();
     },
     //分页
     handleCurrentChange(val) {
       this.currentPage = val;
       console.log(`当前页: ${val}`);
+      this.initData();
     },
     //详情
     handleDetail(row) {
-      this.$router.push("/UserManage/detail");
+      console.log(row);
+      this.$router.push({ path: `/UserManage/detail/${row.id}` });
     },
     //导出数据
     handeleDownloadExcel() {
-      this.form.validateFields((err, values) => {
-        let param = values;
-        if (values.dataTime != undefined) {
-          param.beginDateTime = values.dataTime[0];
-          param.endDateTime = values.dataTime[1];
-        }
-        param.current = this.current;
-        param.size = this.size;
-        getExcel(param).then(res => {
-          var sheet = XLSX.utils.aoa_to_sheet(res.data);
-          openDownloadDialog(sheet2blob(sheet), "用户管理.xlsx");
-        });
+      // let param = this.formInline;
+      // param.pageNum = this.currentPage;
+      // param.pageSize = this.size;
+      // if (this.formInline.dateTime != "") {
+      //   param.beginDate = this.formInline.dateTime[0];
+      //   param.endDate = this.formInline.dateTime[1];
+      // }
+      let param = {};
+      // param.pageNum = this.currentPage;
+      // param.pageSize = this.size;
+      exportUserManage().then(res => {
+        console.log(res);
+        var sheet = XLSX.utils.aoa_to_sheet(res.data);
+        openDownloadDialog(sheet2blob(sheet), "用户管理.xlsx");
       });
     }
   }

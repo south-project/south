@@ -141,7 +141,12 @@ export default {
             .then(res => {
               if (res.code == 200) {
                 let token = res.data.token;
-                localStorage.setItem("account", res.data.name);
+                let param = {};
+                param.id = res.data.id;
+                param.name = res.data.name;
+                param.account = res.data.account;
+                param.roleId = res.data.role_id;
+                localStorage.setItem("userInfo", JSON.stringify(param));
                 this.$store.commit("LOGIN_IN", token);
                 this.$router.replace("/");
               } else {

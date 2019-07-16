@@ -18,7 +18,7 @@
             show-checkbox
             node-key="id"
             ref="tree"
-            :default-checked-keys="menuData"
+            :default-checked-keys="puriew"
             :props="defaultProps"
             @check-change="handleCheckChange"
           ></el-tree>
@@ -33,13 +33,18 @@
 </template>
 
 <script>
+import { allRoleCount } from "@/api/getData";
 export default {
   props: {
     show: {
       type: Boolean
     },
     diaTitle: {},
-    roleData: {}
+    roleData: {},
+    roleName: {},
+    menuData: {
+      type: Array
+    }
   },
   data() {
     return {
@@ -48,64 +53,69 @@ export default {
       form: {
         name: ""
       },
-      data: [
-        {
-          id: 1,
-          label: "估算记录"
-        },
-        {
-          id: 2,
-          label: "用户管理"
-        },
-        {
-          id: 3,
-          label: "均价数据库"
-        },
-        {
-          id: 4,
-          label: "建筑货值统计"
-        },
-        {
-          id: 5,
-          label: "车位货值统计"
-        },
-        {
-          id: 6,
-          label: "banner管理"
-        },
-        {
-          id: 7,
-          label: "系统设置"
-        }
-      ],
+      data: [],
       defaultProps: {
         children: "children",
-        label: "label"
+        label: "name"
       },
-      menuData: ["5"]
+      puriew: []
     };
   },
   watch: {
     show(newVal) {
       this.dialogFormVisible = this.show;
     },
-    roleData(newVal) {
-      console.log(newVal);
+    menuData(newVal) {
+      this.puriew = newVal;
+      this.setTree(newVal);
+    },
+    roleName(newVal) {
       this.form.name = newVal;
     }
   },
-  mounted() {},
+  mounted() {
+    this.initData();
+  },
   methods: {
+    async initData() {
+      allRoleCount().then(res => {
+        if (res.code == 200) {
+          this.data = res.data;
+        }
+      });
+    },
+    //设置树形状态
+    setTree(val) {
+      this.$nextTick(() => {
+        this.$refs.tree.setCheckedKeys(val);
+      });
+    },
     //提交表单
     sendMessage() {
-      this.form.menuData = this.menuData;
+      if (this.form.name == "") {
+        this.$message({
+          showClose: true,
+          message: "请输入角色名称",
+          type: "warning"
+        });
+        return;
+      } else if (this.puriew == "") {
+        this.$message({
+          showClose: true,
+          message: "请至少选择一个权限",
+          type: "warning"
+        });
+        return;
+      }
+      this.puriew = this.puriew.map(item => item.id);
+      this.form.menuData = this.puriew;
       this.$emit("sendMessage", this.form);
       this.dialogFormVisible = false;
     },
     //权限选择
     handleCheckChange(data, checked, indeterminate) {
-      this.menuData = this.$refs.tree.getCheckedNodes();
-      console.log(data, this.$refs.tree.getCheckedNodes());
+      this.puriew = this.$refs.tree.getCheckedNodes();
+      //console.log(data, this.$refs.tree.getCheckedNodes());
     }
   }
 };

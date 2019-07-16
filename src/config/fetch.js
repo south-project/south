@@ -39,7 +39,6 @@ export default async (url = '', data = {}, type = 'GET', method = 'fetch') => {
   }
   type = type.toUpperCase();
   url = url_str + url;
-  //url = url_str + url+"/"+storeId;
 
   if (type == 'GET') {
     let dataStr = ''; //数据拼接字符串
@@ -61,22 +60,19 @@ export default async (url = '', data = {}, type = 'GET', method = 'fetch') => {
     }
 
     try {
-      // let loadingInstance = Loading.service(options);
-      // this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
-      // 	loadingInstance.close();
-      // });
       const response = await fetch(url, requestConfig);
       const responseJson = await response.json();
-      // if (response.status == 403) {
-      //   //设置token
-      //   Message.warning({
-      //     message: '授权失败，请重新登录'
-      //   })
-      //   store.commit('LOGIN_OUT')
-      //   setTimeout(() => {
-      //     window.location.reload()
-      //   }, 1000)
-      // }
+      if (response.status == 403) {
+        //设置token
+        Message.warning({
+          message: '授权失败，请重新登录'
+        })
+        store.commit('LOGIN_OUT')
+        setTimeout(() => {
+          window.location.reload()
+
+        }, 1000)
+      }
       return responseJson
     } catch (error) {
       throw new Error(error)

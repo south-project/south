@@ -35,18 +35,17 @@ export default {
     },
     SET_CURRENT_MENU(state, currentMenu) {
       state.currentMenu = currentMenu
-    }
+    },
   },
   actions: {
     async FETCH_PERMISSION({
       commit,
       state
     }) {
-      // let name = localStorage.getItem('account')
-      // let permissionList = await getPermission('account')
-      // console.log(permissionList)
-      //permissionList = permissionList.data
-      let permissionList = fetchPermission.data
+      let name = JSON.parse(localStorage.getItem('userInfo')).account
+      let permissionList = await getPermission(name)
+      permissionList = permissionList.data
+      //let permissionList = fetchPermission.data
       // /*  根据权限筛选出我们设置好的路由并加入到path=''的children */
       let routes = recursionRouter(permissionList, dynamicRouter)
       let MainContainer = DynamicRoutes.find(v => v.path === '')

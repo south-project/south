@@ -6,7 +6,7 @@
     <div class="page_view">
       <el-table :data="tableData" tooltip-effect="dark" style="width: 100%" border>
         <el-table-column prop="name" label="角色名称" width="120"></el-table-column>
-        <el-table-column prop="num" label="员工数量"></el-table-column>
+        <el-table-column prop="employee_num" label="员工数量"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button @click="handleDelete(scope.row)" type="text">删除</el-button>
@@ -14,7 +14,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="pagiNation">
+      <!-- <div class="pagiNation">
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -24,7 +24,7 @@
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
         ></el-pagination>
-      </div>
+      </div>-->
     </div>
     <WordTip
       :showpreview.sync="showpreview"
@@ -37,6 +37,8 @@
       :diaTitle="diaTitle"
       @sendMessage="sendRole"
       :roleData="roleData"
+      :menuData="menuData"
+      :roleName="roleName"
     />
   </div>
 </template>
@@ -44,6 +46,13 @@
 <script>
 import WordTip from "@/components/setTips";
 import roleEditor from "@/components/roleEditor";
+import {
+  selectRoleCount,
+  deleteRole,
+  insertRole,
+  editRoleCount,
+  updateRole
+} from "@/api/getData";
 export default {
   components: {
     WordTip,
@@ -55,52 +64,49 @@ export default {
       showpreview: false,
       show: false,
       state: null,
+      deleteId: "",
+      rowId: "",
       paramTips: "",
+      roleName: "",
+      menuData: [],
       roleData: [],
-      tableData: [
-        {
-          date: "六一儿童节",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          img: "../../static/img/1.jpg",
-          num: "1"
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          img: "../../static/img/1.jpg",
-          num: "2"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          img: "../../static/img/1.jpg",
-          num: "3"
-        }
-      ],
+      tableData: [],
       currentPage: 1,
-      size: 10,
+      size: 100,
       total: 400
     };
   },
   mounted() {
     //console.log(mapList)
+    this.initData();
   },
   methods: {
+    initData() {
+      selectRoleCount().then(res => {
+        if (res.code == 200) {
+          this.tableData = res.data;
+        }
+      });
+    },
     //删除
     handleDelete(row) {
       this.showpreview = true;
       this.diaTitle = "删除";
       this.paramTips = "您确定删除" + row.name;
+      this.deleteId = row.id;
     },
     //编辑
     handleEdit(row) {
       this.state = false;
+      this.rowId = row.id;
       this.show = true;
       this.diaTitle = "编辑角色";
-      this.roleData = 111;
+      this.roleName = row.name;
+      editRoleCount(row.id).then(res => {
+        let arr = [];
+        res.data.map(item => arr.push(item.pId));
+        this.menuData = arr;
+      });
     },
     //分页
     handleSizeChange(val) {
@@ -111,22 +117,77 @@ export default {
       console.log(`当前页: ${val}`);
     },
     //确认删除
-    sendMessage(e) {},
+    sendMessage(e) {
+      deleteRole(this.deleteId).then(res => {
+        if (res.code == 200) {
+          this.$message({
+            showClose: true,
+            message: "删除成功",
+            type: "success"
+          });
+          setTimeout(() => this.initData(), 300);
+        } else {
+          this.$message({
+            showClose: true,
+            message: res.msg,
+            type: "warning"
+          });
+        }
+      });
+    },
     //添加角色
     addNew() {
       this.state = true;
       this.show = true;
       this.diaTitle = "添加角色";
-      this.roleData = "";
+      this.roleName = "";
+      this.menuData = [];
     },
     //角色提交
     sendRole(e) {
-      if (!state) {
+      let param = {};
+      param.roleName = e.name;
+      param.powerIdList = e.menuData;
+      if (!this.state) {
         //编辑
+        param.id = this.rowId;
+        updateRole(param).then(res => {
+          if (res.code == 200) {
+            this.$message({
+              showClose: true,
+              message: "编辑成功",
+              type: "success"
+            });
+            setTimeout(() => this.initData(), 300);
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.msg,
+              type: "warning"
+            });
+          }
+        });
       } else {
         //添加
+
+        insertRole(param).then(res => {
+          console.log(res);
+          if (res.code == 200) {
+            this.$message({
+              showClose: true,
+              message: "添加成功",
+              type: "success"
+            });
+            setTimeout(() => this.initData(), 300);
+          } else {
+            this.$message({
+              showClose: true,
+              message: res.msg,
+              type: "warning"
+            });
+          }
+        });
       }
-      console.log(e);
     }
   }
 };

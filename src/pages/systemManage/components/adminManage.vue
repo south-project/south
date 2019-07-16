@@ -7,12 +7,24 @@
       <el-table :data="tableData" tooltip-effect="dark" style="width: 100%" border>
         <el-table-column prop="name" label="管理员姓名" width="120"></el-table-column>
         <el-table-column prop="mobile" label="联系方式"></el-table-column>
-        <el-table-column prop="roleName" label="角色"></el-table-column>
+        <el-table-column prop="roleName" label="角色">
+          <template slot-scope="scope">
+            <span>{{scope.row.roleId | getRoleId}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="account" label="登录账号"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button @click="handleDelete(scope.row)" type="text">删除</el-button>
-            <el-button @click="handleEdit(false,scope.row)" type="text">编辑</el-button>
+            <el-button
+              @click="handleDelete(scope.row)"
+              :disabled="scope.row.roleId==1"
+              type="text"
+            >删除</el-button>
+            <el-button
+              @click="handleEdit(false,scope.row)"
+              :disabled="scope.row.roleId==1"
+              type="text"
+            >编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -62,6 +74,7 @@ export default {
       paramTips: "",
       deleteId: "",
       state: null,
+      subStatus: false,
       formData: [],
       tableData: [],
       currentPage: 1,
@@ -103,6 +116,7 @@ export default {
       this.state = e;
       this.show = true;
       this.diaTitle = "编辑管理员";
+      this.deleteId = row.id;
       adminCheck(row.id).then(res => {
         if (res.code == 200) {
           this.formData = res.data;
@@ -130,7 +144,7 @@ export default {
             message: "已删除",
             type: "success"
           });
-          this.initData();
+          setTimeout(() => this.initData(), 300);
         } else {
           this.$message({
             showClose: true,
@@ -142,6 +156,7 @@ export default {
     },
     //管理员编辑
     sendRole(e) {
+      e.id = this.deleteId;
       if (!this.state) {
         editAdminManage(e).then(res => {
           if (res.code == 200) {
@@ -150,7 +165,7 @@ export default {
               message: "编辑成功",
               type: "success"
             });
-            this.initData();
+            setTimeout(() => this.initData(), 300);
           } else {
             this.$message({
               showClose: true,
@@ -167,7 +182,7 @@ export default {
               message: "添加成功",
               type: "success"
             });
-            this.initData();
+            setTimeout(() => this.initData(), 300);
           } else {
             this.$message({
               showClose: true,

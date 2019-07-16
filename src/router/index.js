@@ -63,7 +63,7 @@ export const DynamicRoutes = [{
         },
       },
       {
-        path: '/UserManage/detail',
+        path: '/UserManage/detail/:id',
         component: UserManageDetail,
         name: 'UserManageDetail',
         meta: {

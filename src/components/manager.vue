@@ -102,12 +102,12 @@ export default {
   },
   mounted() {
     selectAdmin().then(res => {
+      this.$store.commit("setRoleManage", res.data);
       res.data.map(item => {
         item.value = item.id;
         item.label = item.name;
       });
       this.classItem = res.data;
-      console.log(this.classItem);
     });
   },
   methods: {
