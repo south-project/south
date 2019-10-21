@@ -3,7 +3,7 @@
     <div class="page_view">
       <div class="flutter">
         <section v-for="item in flutterList" :key="item.id" @click="goAsh(item)">
-          <span>{{item.name}}</span>
+          <span>{{item.building_name}}</span>
         </section>
       </div>
     </div>
@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { buildAllType } from "@/api/getData";
 export default {
   data() {
     return {
@@ -28,15 +29,23 @@ export default {
     };
   },
   mounted() {
-    //console.log(mapList)
+    this.initData();
   },
   methods: {
+    async initData() {
+      await buildAllType().then(res => {
+        if (res.code == 200) {
+          this.flutterList = res.data;
+          this.$store.commit("setBuildType", this.flutterList);
+        }
+      });
+    },
     //跳转页面
     goAsh(e) {
-      if (e.id == 1) {
+      if (e.id == "31") {
         this.$router.push({ path: `/BuildManage/detail` });
       } else {
-        this.$router.push({ path: `/DataManage/detail/${e.name}` });
+        this.$router.push({ path: `/DataManage/detail/${e.id}` });
       }
     }
   }

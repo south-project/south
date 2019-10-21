@@ -83,7 +83,6 @@ export default {
     };
   },
   mounted() {
-    //console.log(mapList)
     this.initData();
   },
   methods: {
@@ -156,6 +155,7 @@ export default {
     },
     //管理员编辑
     sendRole(e) {
+      //编辑
       e.id = this.deleteId;
       if (!this.state) {
         editAdminManage(e).then(res => {
@@ -175,6 +175,7 @@ export default {
           }
         });
       } else {
+        //添加
         addAdminManage(e).then(res => {
           if (res.code == 200) {
             this.$message({

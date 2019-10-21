@@ -16,6 +16,7 @@ Vue.config.productionTip = false
 Vue.use(ElementUI)
 //路由守卫
 router.beforeEach((to, from, next) => {
+  console.log(store)
   if (!store.state.UserToken) {
     if (
       to.matched.length > 0 &&
@@ -30,8 +31,14 @@ router.beforeEach((to, from, next) => {
   } else {
     if (!store.state.permission.permissionList) {
       store.dispatch('permission/FETCH_PERMISSION').then(() => {
+        let path = ''
+        if (from.name == 'Login') {
+          path = store.state.permission.sidebarMenu[0].name
+        } else {
+          path = to.path
+        }
         next({
-          path: to.path
+          path: path
         })
       })
     } else {
@@ -47,11 +54,14 @@ router.beforeEach((to, from, next) => {
 router.afterEach((to, from, next) => {
   var routerList = to.matched
   store.commit('setCrumbList', routerList)
-  let name = to.name.split("Detail")[0]
-  if (name == 'BuildManage') {
-    name = "DataManage"
-  }
-  store.commit('permission/SET_CURRENT_MENU', name)
+  store.commit('permission/SET_CURRENT_MENU', to.name)
+  // if (to.name != 403) {
+  //   let name = to.name.split("Detail")[0]
+  //   if (name == 'BuildManage') {
+  //     name = "DataManage"
+  //   }
+  //   store.commit('permission/SET_CURRENT_MENU', name)
+  // }
 })
 
 /* eslint-disable no-new */

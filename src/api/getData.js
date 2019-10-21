@@ -6,6 +6,29 @@ import fetch from '../config/fetch'
 export const getPermission = (account) => fetch('/login/selectPowerByAccount', {
   account
 }, 'POST')
+/**
+ * 三级联动数据
+ */
+export const queryArea = (code) => fetch('/area/queryArea', {
+  code
+}, 'POST')
+
+/**
+ * 批量设置为有效估算
+ */
+export const updateBatchEffectiveEstimate = (list) => fetch('/effect/updateBatchEffectiveEstimate', list, 'POST')
+/**
+ * 将某条记录是否设置有效估算
+ */
+export const updateOneEffectiveEstimate = (projectNumber, effectiveEstimate) => fetch('/effect/updateOneEffectiveEstimate', {
+  projectNumber,
+  effectiveEstimate
+}, 'POST')
+
+/**
+ * 估算详情
+ */
+export const estimateClear = (param) => fetch('/investment/queryOneInvestDetail', param, 'POST')
 
 /**
  * 估算记录
@@ -23,6 +46,18 @@ export const setEstimateEffect = (list) => fetch('/investment/setBatchEffect', {
 export const setEstimateUnEffect = (list) => fetch('/investment/setBatchNoEffect', {
   list
 }, 'POST')
+/**
+ * 估算记录 将某条记录设置有效调整设置
+ */
+export const setEstimateOneEffect = (id, effectiveEstimate) => fetch('/investment/setOneEffect', {
+  id,
+  effectiveEstimate
+}, 'POST')
+/**
+ * 估算记录 导出数据
+ */
+export const exportEstimateManage = (param) => fetch('/investment/exportInvestment', param, 'POST')
+
 
 /**
  * 用户管理
@@ -53,10 +88,71 @@ export const setEffective = (id, effective_estimate) => fetch('/user/updateOneEf
 }, 'POST')
 
 /**
- * 均价数据库 建筑分类
+ * 均价数据库
  */
-export const buildAllType = () => fetch('/avg/selectAllType', {}, 'POST')
+export const buildAllType = () => fetch('/avg/selectAllAvgType', {}, 'POST')
 /**
+ * 均价数据库 建筑分类(多的子数据)
+ */
+export const buildDetailType = () => fetch('/avg/selectAllBuildType', {}, 'POST')
+/**
+ * 均价数据库 建安成本分类展示
+ */
+export const queryAllBuildTypePrice = (param) => fetch('/avg/queryAllBuildTypePrice', param, 'POST')
+/**
+ * 均价数据库 建筑分类 建安某条修改预设单价
+ */
+export const updateReservePrice = (param) => fetch('/avg/updateReservePrice', param, 'POST')
+/**
+ * 均价数据库 建筑分类  批量修改预设单价
+ */
+export const batchUpdateReservePrice = (param) => fetch('/avg/batchUpdateReservePrice', param, 'POST')
+/**
+ * 均价数据库 建筑分类  建安成本分类导出数据
+ */
+export const buildExpExcelData = (param) => fetch('/avg/buildExpExcelData', param, 'POST')
+/**
+ * 均价数据库 DataManage建安成本之外展示
+ */
+export const queryOtherBuildTypePrice = (param) => fetch('/avg/queryOtherAllBuildTypePrice', param, 'POST')
+/**
+ * 均价数据库 DataManage修改预设单价
+ */
+export const updateOtherReservePrice = (param) => fetch('/avg/updateOtherReservePrice', param, 'POST')
+/**
+ * 均价数据库 DataManage批量修改预设单价
+ */
+export const batchOtherUpdateReservePrice = (param) => fetch('/avg/batchOtherUpdateReservePrice', param, 'POST')
+/**
+ * 均价数据库 DataManage导出数据
+ */
+export const buildValueExpExcelData = (param) => fetch('/avg/buildValueExpExcelData', param, 'POST')
+/**
+ * 均价数据库 通用接口采用预设单价
+ */
+export const setAvgAllPrice = (param) => fetch('/avg/setAvgPrice', param, 'POST')
+
+
+/**
+ * 建筑货值 列表页
+ */
+export const queryAllValueType = (param) => fetch('/value/queryAllValueType', param, 'POST')
+/**
+ * 建筑货值 导出数据
+ */
+export const theValueExpExcelData = (param) => fetch('/value/theValueExpExcelData', param, 'POST')
+
+
+/**
+ * 车位货值 列表页
+ */
+export const queryAllCarValueType = (param) => fetch('/car/queryAllCarValueType', param, 'POST')
+/**
+ * 车位货值 导出数据
+ */
+export const carExpExcelData = (param) => fetch('/car/expExcelData', param, 'POST')
+
+
 
 /**
  * banner管理 列表页

@@ -3,7 +3,7 @@
     <div class="page_view">
       <el-button class="backSubmit" @click="backSubmit">返回</el-button>
       <div class="user_head">
-        <img class="img" src alt />
+        <el-avatar class="img" :src="userData.headimg"></el-avatar>
         <div class="user_data">
           <ul>
             <li>
@@ -45,7 +45,7 @@
               </p>
               <p>
                 <span class="left">有限次数</span>
-                <span class="right">{{userData.valid_estimate_times}}</span>
+                <span class="right">{{userData.limitNum}}</span>
               </p>
             </li>
           </ul>
@@ -114,7 +114,12 @@
 </template>
 
 <script>
-import { userManageList, userManageRecords, setEffective } from "@/api/getData";
+import {
+  userManageList,
+  userManageRecords,
+  setEffective,
+  updateOneEffectiveEstimate
+} from "@/api/getData";
 import WordTip from "@/components/setTips";
 export default {
   components: {
@@ -164,21 +169,22 @@ export default {
     },
     //返回
     backSubmit() {
-      //this.$router.go(-1);
       this.$router.push("/UserManage");
     },
     //分页
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
       this.size = val;
     },
     //分页
     handleCurrentChange(val) {
       this.currentPage = val;
-      console.log(`当前页: ${val}`);
     },
     //详情
     handleDetail(row) {
+      let estimateParam = {};
+      estimateParam.userId = row.userId;
+      estimateParam.projectId = row.id;
+      localStorage.setItem("estimateParam", JSON.stringify(estimateParam));
       this.$router.push("/Estimate/detail");
     },
     //设置(有效估算)
@@ -200,9 +206,11 @@ export default {
     },
     //提交表单
     sendMessage(e) {
-      setEffective(this.param.id, this.param.effective_estimate).then(res => {
+      updateOneEffectiveEstimate(
+        this.param.id,
+        this.param.effective_estimate
+      ).then(res => {
         if (res.code == 200) {
-          console.log(res);
           this.$message({
             showClose: true,
             message: "设置成功",

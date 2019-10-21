@@ -12,6 +12,7 @@
           class="demo-form-inline form"
           size="medium"
           label-width="120px"
+          v-loading="loading"
         >
           <el-form-item class="base_long" label="banner名称" prop="name">
             <el-input v-model="formInline.name" placeholder="请输入banner名称"></el-input>
@@ -21,7 +22,7 @@
           </el-form-item>
           <el-form-item label="上传图片" prop="image">
             <p>
-              <span>图片支持.jpg .png,建议尺寸750*360,大小不超过2M</span>
+              <span>图片支持.jpg .png,建议尺寸720*360,大小不超过1M</span>
             </p>
             <div class="show_img" v-if="cover!=null">
               <img :src="cover" alt />
@@ -49,7 +50,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button @click="submit('formInline')">保存</el-button>
+            <el-button @click="submit('formInline')" :loading="subState">保存</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -78,6 +79,8 @@ export default {
         name: "",
         image: ""
       },
+      subState: false,
+      loading: false,
       classItem: [],
       autherItem: "",
       baseNumber: 0,
@@ -114,11 +117,13 @@ export default {
   methods: {
     async initData() {
       if (this.$route.params.data != "add") {
+        this.loading = true;
         await editShowBanner(this.rowId).then(res => {
           if (res.code == 200) {
             this.formInline = res.data;
             this.cover = res.data.image;
             this.formInline.image = res.data.image;
+            this.loading = false;
           }
         });
       }
@@ -139,9 +144,9 @@ export default {
     //文件上传之前调用做一些拦截限制
     beforeAvatarUpload(file) {
       const isJPG = true;
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isLt2M = file.size / 1024 / 1024 < 1;
       if (!isLt2M) {
-        this.$message.error("上传图片大小不能超过 2MB!");
+        this.$message.error("上传图片大小不能超过 1M!");
       }
       return isJPG && isLt2M;
     },
@@ -168,11 +173,13 @@ export default {
     submit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.subState = true;
           if (this.$route.params.data != "add") {
             //编辑成功
             this.formInline.id = this.rowId;
             editBanner(this.formInline).then(res => {
               if (res.code == 200) {
+                this.subState = false;
                 this.$message({
                   showClose: true,
                   message: "编辑成功",
@@ -191,6 +198,7 @@ export default {
             //添加
             addBanner(this.formInline).then(res => {
               if (res.code == 200) {
+                this.subState = false;
                 this.$message({
                   showClose: true,
                   message: "添加成功",

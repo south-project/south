@@ -40,10 +40,10 @@
           <el-input v-model="form.oldPassword" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="新密码" :label-width="formLabelWidth" prop="newPassword">
-          <el-input v-model="form.newPassword" autocomplete="off"></el-input>
+          <el-input v-model="form.newPassword" autocomplete="off" type="password"></el-input>
         </el-form-item>
         <el-form-item label="确认新密码" :label-width="formLabelWidth" prop="checkPassword">
-          <el-input v-model="form.checkPassword" autocomplete="off"></el-input>
+          <el-input v-model="form.checkPassword" autocomplete="off" type="password"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -93,7 +93,7 @@ export default {
       },
       rules: {
         oldPassword: [
-          { required: true, message: "请输入管理员姓名", trigger: "blur" }
+          { required: true, message: "请输入原密码", trigger: "blur" }
         ],
         newPassword: [
           { required: true, validator: validatePass, trigger: "blur" }
@@ -116,11 +116,12 @@ export default {
     toggleNavCollapse() {
       this.$store.commit("toggleNavCollapse");
     },
+    //退出登录
     loginOut() {
       this.$store.commit("LOGIN_OUT");
       this.$router.push("/Login");
       /* 防止切换角色时addRoutes重复添加路由导致出现警告 */
-      //window.location.reload()
+      //window.location.reload();
     },
     //修改密码
     changePassWord() {

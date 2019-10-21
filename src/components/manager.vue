@@ -75,14 +75,14 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: "请输入管理员姓名", trigger: "blur" }
+          { required: true, message: "请输入管理员姓名", trigger: "change" }
         ],
         mobile: [
-          { required: true, validator: validateAccount, trigger: "blur" }
+          { required: true, validator: validateAccount, trigger: "change" }
         ],
-        role: [{ required: true, message: "请选择角色", trigger: "blur" }],
+        role: [{ required: true, message: "请选择角色", trigger: "change" }],
         account: [
-          { required: true, message: "请输入登录账号", trigger: "blur" }
+          { required: true, message: "请输入登录账号", trigger: "change" }
         ]
       },
       classItem: []
@@ -93,6 +93,9 @@ export default {
       this.dialogFormVisible = this.show;
     },
     formData(newVal) {
+      if (newVal == "") {
+        this.$refs["form"].resetFields();
+      }
       let data = this.form;
       data.name = newVal.name;
       data.mobile = newVal.mobile;
@@ -116,6 +119,8 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.form.role_id = this.form.role;
+          delete this.form.role;
+          delete this.form.password;
           this.$emit("sendMessage", this.form);
           this.dialogFormVisible = false;
         } else {

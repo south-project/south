@@ -21,6 +21,7 @@
           <el-date-picker
             v-model="formInline.dateTime"
             type="daterange"
+            value-format="yyyy-MM-dd HH:mm:ss"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -44,7 +45,7 @@
           <el-button @click="searchInfo" type="primary">搜索</el-button>
         </el-form-item>
         <el-form-item class="addNew">
-          <el-button type="primary" @click="handeleDownloadExcel">导出数据</el-button>
+          <el-button type="primary" @click="handleDownloadExcel">导出数据</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -108,14 +109,17 @@ export default {
     };
   },
   mounted() {
-    //console.log(mapList)
     this.initData();
   },
   methods: {
     initData() {
-      let param = {};
+      let param = this.formInline;
       param.pageNum = this.currentPage;
       param.pageSize = this.size;
+      if (this.formInline.dateTime != "") {
+        param.beginDate = this.formInline.dateTime[0];
+        param.endDate = this.formInline.dateTime[1];
+      }
       userManage(param).then(res => {
         if (res.code == 200) {
           this.tableData = res.data.rows;
@@ -135,21 +139,7 @@ export default {
     },
     //搜索
     searchInfo() {
-      let param = this.formInline;
-      param.pageNum = this.currentPage;
-      param.pageSize = this.size;
-      if (this.formInline.dateTime != "") {
-        param.beginDate = this.formInline.dateTime[0];
-        param.endDate = this.formInline.dateTime[1];
-      }
-      userManage(param).then(res => {
-        if (res.code == 200) {
-          this.tableData = res.data.rows;
-          this.currentPage = res.data.currentPage;
-          this.size = res.data.currentPageTotal;
-          this.total = res.data.total;
-        }
-      });
+      this.initData();
     },
     //重置
     resetForm(formName) {
@@ -158,35 +148,22 @@ export default {
     },
     //分页
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
       this.size = val;
       this.initData();
     },
     //分页
     handleCurrentChange(val) {
       this.currentPage = val;
-      console.log(`当前页: ${val}`);
       this.initData();
     },
     //详情
     handleDetail(row) {
-      console.log(row);
       this.$router.push({ path: `/UserManage/detail/${row.id}` });
     },
     //导出数据
-    handeleDownloadExcel() {
-      // let param = this.formInline;
-      // param.pageNum = this.currentPage;
-      // param.pageSize = this.size;
-      // if (this.formInline.dateTime != "") {
-      //   param.beginDate = this.formInline.dateTime[0];
-      //   param.endDate = this.formInline.dateTime[1];
-      // }
+    handleDownloadExcel() {
       let param = {};
-      // param.pageNum = this.currentPage;
-      // param.pageSize = this.size;
       exportUserManage().then(res => {
-        console.log(res);
         var sheet = XLSX.utils.aoa_to_sheet(res.data);
         openDownloadDialog(sheet2blob(sheet), "用户管理.xlsx");
       });

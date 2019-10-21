@@ -9,9 +9,8 @@
     </div>
   </div>
 </template>
-
 <script>
-import { buildAllType } from "@/api/getData";
+import { buildDetailType } from "@/api/getData";
 export default {
   data() {
     return {
@@ -19,20 +18,22 @@ export default {
     };
   },
   mounted() {
-    //console.log(mapList)
     this.initData();
   },
   methods: {
     async initData() {
-      await buildAllType().then(res => {
+      await buildDetailType().then(res => {
         if (res.code == 200) {
           this.flutterList = res.data;
+          this.$store.commit("setBuildType", this.flutterList);
         }
       });
     },
     //跳转页面
     goAsh(e) {
-      this.$router.push({ path: `/BuildManage/detail/${e.building_name}` });
+      this.$router.push({
+        path: `/BuildManage/detail/${e.id}`
+      });
     }
   }
 };

@@ -16,7 +16,7 @@
     </div>
     <div class="f_right">
       <h4 class="large_title" style="color:#fff">
-        <img src="static/img/login/south.png" class="logo_icon" alt="logo" />南方设计
+        <img src="static/img/logo.png" class="logo_icon" alt="logo" style="width:300px;" />
       </h4>
       <el-form
         :model="ruleForm"
@@ -26,9 +26,7 @@
         label-width
         class="demo-ruleForm"
       >
-        <h5 class="small_title">
-          <img src="static/img/login/denglu.png" alt="登录" />密码登录
-        </h5>
+        <h5 class="small_title">账号密码登录</h5>
         <el-form-item prop="pass" class="icon_content">
           <img class="icon_item" src="static/img/login/shouji.png" alt />
           <el-input
@@ -47,6 +45,7 @@
             v-model="ruleForm.checkPass"
             placeholder="请输入密码"
             autocomplete="off"
+            @keyup.enter.native="submitForm('ruleForm')"
           ></el-input>
         </el-form-item>
         <!-- <el-form-item class="icon_content type_code"  prop="captcha">
@@ -147,6 +146,10 @@ export default {
                 param.account = res.data.account;
                 param.roleId = res.data.role_id;
                 localStorage.setItem("userInfo", JSON.stringify(param));
+                localStorage.setItem(
+                  "permissionList",
+                  JSON.stringify(res.data.powerInfo)
+                );
                 this.$store.commit("LOGIN_IN", token);
                 this.$router.replace("/");
               } else {

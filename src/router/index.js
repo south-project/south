@@ -116,6 +116,10 @@ export const DynamicRoutes = [{
   },
   {
     path: '/403',
-    component: Forbidden
+    component: Forbidden,
+    name: "403",
+    meta: {
+      isActive: false
+    }
   },
 ]

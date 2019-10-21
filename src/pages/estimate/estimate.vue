@@ -46,6 +46,8 @@
         <el-form-item label="估算时间" prop="dateTime">
           <el-date-picker
             v-model="formInline.dateTime"
+            @change="changeTime"
+            value-format="yyyy-MM-dd HH:mm:ss"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
@@ -59,9 +61,7 @@
           <el-button @click="searchInfo" type="primary">搜索</el-button>
         </el-form-item>
         <el-form-item class="addNew">
-          <router-link to="/class/addGraphic/add">
-            <el-button type="primary">导出数据</el-button>
-          </router-link>
+          <el-button type="primary" @click="handleDownloadExcel">导出数据</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -132,10 +132,15 @@
 <script>
 import {
   estimateManage,
-  setEffective,
+  setEstimateOneEffect,
   setEstimateEffect,
-  setEstimateUnEffect
+  setEstimateUnEffect,
+  exportEstimateManage,
+  updateBatchEffectiveEstimate,
+  updateOneEffectiveEstimate
 } from "@/api/getData";
+import { openDownloadDialog, sheet2blob } from "@/api/downDialog";
+import XLSX from "xlsx";
 import WordTip from "@/components/setTips";
 import SelectOption from "@/components/select";
 export default {
@@ -150,11 +155,12 @@ export default {
         buildType: "",
         effectiveEstimate: "",
         name: "",
-        province: "",
-        city: "",
-        district: "",
+        provinceCode: "",
+        cityCode: "",
+        districtCode: "",
         dateTime: ""
       },
+      serchParam: "",
       param: [],
       showpreview: false,
       diaTitle: "",
@@ -183,7 +189,6 @@ export default {
     };
   },
   mounted() {
-    //console.log(mapList)
     this.initData();
   },
   methods: {
@@ -191,6 +196,7 @@ export default {
       let param = this.formInline;
       param.pageNum = this.currentPage;
       param.pageSize = this.size;
+      this.serchParam = param;
       estimateManage(param).then(res => {
         if (res.code == 200) {
           let tab = res.data;
@@ -201,24 +207,36 @@ export default {
         }
       });
     },
+    //导出数据
+    handleDownloadExcel() {
+      exportEstimateManage(this.serchParam).then(res => {
+        var sheet = XLSX.utils.aoa_to_sheet(res.data);
+        openDownloadDialog(sheet2blob(sheet), "估算记录.xlsx");
+      });
+    },
+    //切换时间
+    changeTime(e) {
+      console.log(e[0]);
+    },
     //省级选择
     choseProvince(e) {
-      this.formInline.province = e.sheng;
-      this.formInline.city = e.shi;
-      this.formInline.district = e.qu;
+      this.formInline.provinceCode = e.sheng;
+      this.formInline.cityCode = e.shi;
+      this.formInline.districtCode = e.qu;
     },
     //市级选择
     choseCity(e) {
-      this.formInline.city = e.shi;
-      this.formInline.district = e.qu;
+      this.formInline.cityCode = e.shi;
+      this.formInline.districtCode = e.qu;
     },
     //区级选择
     choseBlock(e) {
-      this.formInline.district = e.qu;
+      this.formInline.districtCode = e.qu;
     },
     //搜索
     searchInfo() {
       console.log(this.formInline);
+
       if (this.formInline.dateTime != "") {
         this.formInline.beginDate = this.formInline.dateTime[0];
         this.formInline.endDate = this.formInline.dateTime[1];
@@ -229,6 +247,11 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
       this.$refs.myChild.resetForm();
+      delete this.formInline["beginDate"];
+      delete this.formInline["endDate"];
+      this.formInline.provinceCode = "";
+      this.formInline.cityCode = "";
+      this.formInline.districtCode = "";
       this.initData();
     },
     //是否过滤
@@ -255,7 +278,6 @@ export default {
       }
       this.showpreview = true;
       this.param = param;
-      console.log(this.param);
     },
     //批量设为有效估算
     handleBauch() {
@@ -268,7 +290,10 @@ export default {
       } else {
         let arr = [];
         this.multipleSelection.map(item => arr.push(item.id));
-        setEstimateEffect(arr).then(res => {
+        let param = {};
+        param.idList = arr;
+        param.effectiveEstimate = 1;
+        updateBatchEffectiveEstimate(param).then(res => {
           if (res.code == 200) {
             this.$message({
               showClose: true,
@@ -297,7 +322,10 @@ export default {
       } else {
         let arr = [];
         this.multipleSelection.map(item => arr.push(item.id));
-        setEstimateUnEffect(arr).then(res => {
+        let param = {};
+        param.idList = arr;
+        param.effectiveEstimate = 0;
+        updateBatchEffectiveEstimate(param).then(res => {
           if (res.code == 200) {
             this.$message({
               showClose: true,
@@ -330,22 +358,29 @@ export default {
     },
     //分页
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      this.size = val;
+      this.initData();
     },
     //分页
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      this.initData();
     },
     //详情
     handleDetail(row) {
+      let estimateParam = {};
+      estimateParam.userId = row.userId;
+      estimateParam.projectId = row.id;
+      localStorage.setItem("estimateParam", JSON.stringify(estimateParam));
       this.$router.push("/Estimate/detail");
     },
-    //提交表单
+    //提交表单(单条设置是否有效)
     sendMessage(e) {
-      console.log(this.param);
-      setEffective(this.param.id, this.param.effective_estimate).then(res => {
+      updateOneEffectiveEstimate(
+        this.param.id,
+        this.param.effective_estimate
+      ).then(res => {
         if (res.code == 200) {
-          console.log(res);
           this.$message({
             showClose: true,
             message: "设置成功",

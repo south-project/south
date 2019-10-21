@@ -1,3 +1,4 @@
+
 import fetchPermission from '../../../static/json/permission.json'
 import {
   recursionRouter,
@@ -42,9 +43,11 @@ export default {
       commit,
       state
     }) {
-      let name = JSON.parse(localStorage.getItem('userInfo')).account
-      let permissionList = await getPermission(name)
-      permissionList = permissionList.data
+      // let name = JSON.parse(localStorage.getItem('userInfo')).account
+      // let permissionList = await getPermission(name)
+      // permissionList = permissionList.data
+      let permissionList = JSON.parse(localStorage.getItem('permissionList'))
+      // console.log(permissionList)
       //let permissionList = fetchPermission.data
       // /*  根据权限筛选出我们设置好的路由并加入到path=''的children */
       let routes = recursionRouter(permissionList, dynamicRouter)
@@ -58,20 +61,12 @@ export default {
           }
         });
       })
-      // arr = arr.concat(...routes)
       arr = routes.concat(arr)
       /* 生成左侧导航菜单 */
       commit('SET_MENU', arr)
-      /*
-          为所有有children的菜单路由设置第一个children为默认路由
-          主要是供面包屑用，防止点击面包屑后进入某个路由下的 '' 路由,比如/manage/
-          而我们的路由是
-          [
-              /manage/menu1,
-              /manage/menu2
-          ]
-      */
+
       DynamicRoutes[0].children = arr
+      /*  设置第一个路由为默认路由 */
       setDefaultRoute([MainContainer])
       /*  初始路由 */
       let initialRoutes = router.options.routes

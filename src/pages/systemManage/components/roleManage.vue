@@ -77,7 +77,6 @@ export default {
     };
   },
   mounted() {
-    //console.log(mapList)
     this.initData();
   },
   methods: {
@@ -169,9 +168,7 @@ export default {
         });
       } else {
         //添加
-
         insertRole(param).then(res => {
-          console.log(res);
           if (res.code == 200) {
             this.$message({
               showClose: true,

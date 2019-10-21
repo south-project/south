@@ -76,12 +76,12 @@
       }
 
       .content {
-        padding: 10px 10%;
+        padding: 10px 6%;
         border: 1px solid $bc;
         margin-top: 20px;
 
         p {
-          margin: 2px 0;
+          margin: 4px 0;
         }
       }
     }
@@ -172,32 +172,33 @@
   // 均价数据库
   .flutter {
     @include flex-center();
-    justify-content: flex-start;
+    align-items: center;
     flex-wrap: wrap;
+    margin: 0 10%;
 
     section {
       flex: 1;
       border-radius: 5px;
       margin: 8px;
-      background: #b4e7f3;
+      background: #fff;
+      border: 1px solid #e6e6e6;
       @include hl(80px, 80px);
       text-align: center;
       @include sc(16px, $mainColor);
       min-width: 31%;
-      max-width: 31%;
       cursor: pointer;
-      transition: 0.4s;
+      transition: 0.3s;
+      box-shadow: 0 2px 10px 0 #ADB0B2;
     }
 
     section:hover {
-      opacity: .9;
-      //transform: translate3d(-1px,-1px,1px) #d4eff5 #a0b1c3
+      background: #ecf5ff;
+      //transform: translate3d(-1px, -1px, 1px) #d4eff5 #a0b1c3;
       color: $fc;
     }
 
     &.row {
       section {
-        max-width: 18%;
         min-width: 18%;
       }
     }
@@ -223,7 +224,10 @@
         color: $fc;
         display: flex;
         align-items: center;
-
+        font-size: 13px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
       }
 
       .td {
@@ -231,6 +235,10 @@
         justify-content: center;
         text-align: center;
         border-bottom: 1px solid #e6e6e6;
+        font-size: 14px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
       }
     }
   }

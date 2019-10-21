@@ -116,6 +116,36 @@ export function getBoolean(val) {
     return 0
   }
 }
+//预设/平均单价
+export function getPriceType(val) {
+  if (val == 0) {
+    return "预设单价";
+  } else {
+    return "平均单价";
+  }
+}
+//估算详情是否有值(万元)
+export function getEstimate(val) {
+  if (val == null) {
+    return "";
+  } else {
+    return val + "万元";
+  }
+}
+//估算详情是否有值(平米)
+export function getMetter(val) {
+  if (val == null) {
+    return "";
+  } else {
+    return val + "M²";
+  }
+}
+//数字匹配
+export function getNumber(val) {
+  var array0 = ['一', '二', '三', '四', '五', '六', '七']
+  var text = array0[val]
+  return text
+}
 //
 const checkModel = ({
   model,

@@ -6,6 +6,8 @@ export default {
   //登出
   LOGIN_OUT(state) {
     state.UserToken = ''
+    state.permission.permissionList = ""
+    state.permission.currentMenu = ""
     localStorage.clear()
   },
   //切换侧边栏
@@ -25,6 +27,10 @@ export default {
   //
   setCrumbIndex(state, crumbIndex) {
     state.crumbIndex = crumbIndex
+  },
+  //建筑分类
+  setBuildType(state, buildType) {
+    state.buildType = buildType
   },
   //管理员角色
   setRoleManage(state, roleList) {
